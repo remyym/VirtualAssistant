@@ -14,7 +14,7 @@ intents: object = json.loads(open('intents.json').read())
 
 words: Any = pickle.load(open('words.pkl', 'rb'))
 classes: object = pickle.load(open('classes.pkl', 'rb'))
-model: Any | None = load_model('virtualassistant.h5')
+model: Any | None = load_model('model.h5')
 
 
 def clean_up_sentence(sentence) -> object:
@@ -60,12 +60,3 @@ def get_response(intents_list: object, intents_json: object) -> object:
             result = random.choice(intent['responses'])
             break
     return result
-
-
-print("GO!")
-
-while True:
-    message: str = input("")
-    ints: object = predict_class(message)
-    response: object = get_response(ints, intents)
-    print(response)
