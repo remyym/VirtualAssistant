@@ -1,0 +1,8 @@
+{"intents":  [
+  {"tag":  "greetings",
+  "patterns":  ["hello there", "hey", "hi", "what's up"],
+  "responses":  ["Hello there.", "Hi there.", "Hello.", "Hi."]},
+  {"tag":  "name",
+  "patterns":  ["who are you", "whats your name", "what are you"],
+  "responses":  ["Hey, I'm Siri.", "I'm Siri, nice to meet you!"]}
+]}
