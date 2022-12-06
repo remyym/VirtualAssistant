@@ -76,10 +76,9 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-# Pickle Dumps and Models
-data/*.pkl
-data/model.h5
-
+# Models
+Model/
+*.h5
 
 # PyCache
 __pycache__/*
