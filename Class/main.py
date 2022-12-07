@@ -167,6 +167,6 @@ class GenericAssistant(IAssistant, ABC):
         method = self.request_method(ints)
 
         if method is not None:
-            return method()
+            return method(), result
 
         return random.choice(result['responses']), result
