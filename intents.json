@@ -1,24 +1,6 @@
 {
   "intents": [
     {
-      "tag": "undefined",
-      "patterns": [
-        "okay",
-        "ok",
-        "what",
-        "yes",
-        "no",
-        "yeah",
-        "nah"
-      ],
-      "responses": [
-        "How can I help?",
-        "Okay.",
-        "Interesting question.",
-        "I'm not sure I understand."
-      ]
-    },
-    {
       "tag": "greetings",
       "patterns": [
         "hello",
@@ -84,7 +66,18 @@
         "time"
       ],
       "responses": [
-        "The time is {time} in {city}"
+        ""
+      ]
+    },
+    {
+      "tag": "date",
+      "patterns": [
+        "what day is it",
+        "what's the date",
+        "date"
+      ],
+      "responses": [
+        ""
       ]
     },
     {
@@ -124,20 +117,34 @@
       ]
     },
     {
-      "tag": "leaving",
+      "tag": "farewell",
       "patterns": [
         "goodbye",
         "bye",
-        "see you later",
-        "i'm leaving",
-        "i have to go",
-        "have a good day",
         "stop"
       ],
       "responses": [
         "Goodbye.",
         "See you later.",
         "Bye."
+      ]
+    },
+    {
+      "tag": "undefined",
+      "patterns": [
+        "okay",
+        "ok",
+        "what",
+        "yes",
+        "no",
+        "yeah",
+        "nah"
+      ],
+      "responses": [
+        "How can I help?",
+        "Okay.",
+        "Interesting question.",
+        "I'm not sure I understand."
       ]
     }
   ]
