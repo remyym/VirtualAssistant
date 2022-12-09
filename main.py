@@ -9,24 +9,34 @@ alexa = GenericAssistant(name='Alexa', intents='intents.json', intent_methods=Ma
 engine: Engine = pyttsx3.init()
 voices: object = engine.getProperty('voices')
 
-engine.setProperty('rate', 175)
+engine.setProperty('rate', 180)
 engine.setProperty('voice', voices[1].id)
 
 
-def text_to_speach(msg):
+def tts(msg):
     print(msg)
 
     engine.say(msg)
     engine.runAndWait()
 
 
-text_to_speach("Hey!")
+if __name__ == '__main__':
+    tts("Hey!")
 
-while True:
-    message = input()
-    response, result = alexa.request(message)
+    try:
+        while True:
+            message = None
 
-    text_to_speach(response)
+            try:
+                message = input()
+            except UnicodeDecodeError:
+                exit(1)
 
-    if alexa.request_tag(result) == 'farewell':
-        exit()
+            if message:
+                response, result = alexa.request(message)
+                tts(response)
+
+                if alexa.request_tag(result) == 'farewell':
+                    exit(0)
+    except KeyboardInterrupt:
+        exit(1)

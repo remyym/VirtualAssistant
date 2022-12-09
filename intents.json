@@ -1,151 +1,42 @@
 {
   "intents": [
-    {
-      "tag": "greetings",
-      "patterns": [
-        "hello",
-        "hey",
-        "hi",
-        "what's up",
-        "yo"
-      ],
-      "responses": [
-        "Hello there.",
-        "Hi there.",
-        "Hello, {user}",
-        "Hi. What can I do for you?"
-      ]
+    {"tag":  "greetings",
+      "patterns": ["hello", "hey", "hi", "what's up"],
+      "responses": ["Hello.", "Hi there.", "Hi. What can I do for you?"]},
+    {"tag":  "good",
+      "patterns": ["i'm good", "i'm okay", "good", "great", "okay", "me too"],
+      "responses": ["That's great!", "Okay, let me know how I can help."]},
+    {"tag":  "mood",
+      "patterns": ["how are you", "how was your day", "how have you been", "how's it going", "how is everything"],
+      "responses": ["Not too shabby. Thanks for asking.", "I feel good. Thanks for asking.", "I'm pretty good. How are you?", "I'm good. Thanks."]},
+    {"tag":  "name",
+      "patterns": ["who are you", "what's your name"],
+      "responses": ["I'm Siri.", "My name is Siri."]},
+    {"tag":  "time",
+      "patterns": ["what time is it", "what's the time", "what is the time"],
+      "responses": [""]},
+    {"tag":  "date",
+      "patterns": ["what day is it", "what month is it", "what year is it", "what's the date", "what's the day of the month"],
+      "responses": [""]},
+    {"tag":  "dice",
+      "patterns": ["roll the dice", "roll the die", "random number from 1 through 6"],
+      "responses": [""]},
+    {"tag":  "doing",
+      "patterns": ["what are you doing"],
+      "responses": ["Well right now, I'm talking to you."]},
+    {"tag":  "age",
+      "patterns": ["how old are you", "what's your age", "when were you born"],
+      "responses": ["I was created in December 2, 2022."]},
+    {"tag":  "insult",
+      "patterns": ["you're dumb", "you're stupid", "i hate you", "you suck"],
+      "responses": ["I'm just trying to help.", "The feeling is not mutual.", "That wasn't very nice.", "I won't respond to that", "I'm sorry."]},
+    {"tag": "farewell",
+      "patterns": ["goodbye", "bye", "stop"],
+      "responses": ["Goodbye.", "See you later.", "Bye."]
     },
-    {
-      "tag": "good",
-      "patterns": [
-        "i'm good",
-        "i'm okay",
-        "good",
-        "great",
-        "me too"
-      ],
-      "responses": [
-        "That's great!",
-        "Okay, let me know how I can help."
-      ]
-    },
-    {
-      "tag": "mood",
-      "patterns": [
-        "how are you",
-        "how was your day",
-        "how have you been",
-        "how's it going",
-        "how's everything"
-      ],
-      "responses": [
-        "Not too shabby. Thanks for asking.",
-        "I feel good. Thanks for asking.",
-        "I'm pretty good. How are you?",
-        "I'm good, thanks."
-      ]
-    },
-    {
-      "tag": "name",
-      "patterns": [
-        "who are you",
-        "what's your name"
-      ],
-      "responses": [
-        "I'm Siri.",
-        "My name is Siri",
-        "My name is Siri. Nice to meet you!"
-      ]
-    },
-    {
-      "tag": "time",
-      "patterns": [
-        "what time is it",
-        "what's the time",
-        "time"
-      ],
-      "responses": [
-        ""
-      ]
-    },
-    {
-      "tag": "date",
-      "patterns": [
-        "what day is it",
-        "what's the date",
-        "date"
-      ],
-      "responses": [
-        ""
-      ]
-    },
-    {
-      "tag": "doing",
-      "patterns": [
-        "what are you doing"
-      ],
-      "responses": [
-        "Well right now, I'm talking to you."
-      ]
-    },
-    {
-      "tag": "age",
-      "patterns": [
-        "how old are you",
-        "what's your age",
-        "when's your birthday",
-        "when were you born"
-      ],
-      "responses": [
-        "I was created in December 2, 2022."
-      ]
-    },
-    {
-      "tag": "insult",
-      "patterns": [
-        "you're dumb",
-        "you're stupid",
-        "shut up"
-      ],
-      "responses": [
-        "I'm just trying to help.",
-        "If there's anything else I can help you with, let me know.",
-        "That wasn't very nice.",
-        "I won't respond to that.",
-        "I'm sorry."
-      ]
-    },
-    {
-      "tag": "farewell",
-      "patterns": [
-        "goodbye",
-        "bye",
-        "stop"
-      ],
-      "responses": [
-        "Goodbye.",
-        "See you later.",
-        "Bye."
-      ]
-    },
-    {
-      "tag": "undefined",
-      "patterns": [
-        "okay",
-        "ok",
-        "what",
-        "yes",
-        "no",
-        "yeah",
-        "nah"
-      ],
-      "responses": [
-        "How can I help?",
-        "Okay.",
-        "Interesting question.",
-        "I'm not sure I understand."
-      ]
+    {"tag": "undefined",
+      "patterns": ["okay", "ok", "yes", "no", "what", "huh"],
+      "responses": ["How can I help?", "Okay.", "I'm not sure I understand."]
     }
   ]
 }

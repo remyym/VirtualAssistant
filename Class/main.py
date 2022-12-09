@@ -35,7 +35,7 @@ class IAssistant(metaclass=ABCMeta):
         """ Implemented in child class """
 
 
-def _clean_up_sentence(sentence) -> object:
+def clean_up_sentence(sentence) -> object:
     sentence_words = nltk.word_tokenize(sentence)
     sentence_words = [lemmatizer.lemmatize(word.lower()) for word in sentence_words]
 
@@ -68,7 +68,7 @@ class GenericAssistant(IAssistant, ABC):
                 if intent['tag'] not in self.classes:
                     self.classes.append(intent['tag'])
 
-        self.words = [lemmatizer.lemmatize(w.lower()) for w in self.words if w not in ignore]
+        self.words = [lemmatizer.lemmatize(word.lower()) for word in self.words if word not in ignore]
 
         self.words = sorted(list(set(self.words)))
         self.classes = sorted(list(set(self.classes)))
@@ -110,7 +110,8 @@ class GenericAssistant(IAssistant, ABC):
         return model
 
     def _bag_of_words(self, sentence: object) -> object:
-        sentence_words: Any = _clean_up_sentence(sentence)
+        sentence_words: Any = clean_up_sentence(sentence)
+
         bag = [0] * len(self.words)
 
         for s in sentence_words:
@@ -143,7 +144,7 @@ class GenericAssistant(IAssistant, ABC):
             result: object = None
 
             for intent in list_of_intents:
-                if intent['tag'] == tag:
+                if self.request_tag(intent) == tag:
                     result = intent
                     break
         except IndexError:
