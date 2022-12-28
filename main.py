@@ -1,42 +1,25 @@
-import pyttsx3
-from pyttsx3 import Engine
+from chatbot import GenericAssistant
 
-from Class import GenericAssistant
-from Methods import Mappings
+from util import speak, handle_input
+import handlers
 
-alexa = GenericAssistant(name='Alexa', intents='intents.json', intent_methods=Mappings)
-
-engine: Engine = pyttsx3.init()
-voices: object = engine.getProperty('voices')
-
-engine.setProperty('rate', 180)
-engine.setProperty('voice', voices[1].id)
-
-
-def tts(msg):
-    print(msg)
-
-    engine.say(msg)
-    engine.runAndWait()
-
+alexa = GenericAssistant(name='Alexa', data='data.json', handlers=handlers)
 
 if __name__ == '__main__':
-    tts("Hey!")
+    greetings = alexa.get_response('greetings')
+    speak(greetings, True)
 
     try:
         while True:
-            message = None
+            message = handle_input()
 
-            try:
-                message = input()
-            except UnicodeDecodeError:
-                exit(1)
+            if not message:
+                continue
 
-            if message:
-                response, result = alexa.request(message)
-                tts(response)
+            response, result = alexa.request(message)
+            speak(response, True)
 
-                if alexa.request_tag(result) == 'farewell':
-                    exit(0)
+            if result.get('tag') == 'farewell':
+                exit()
     except KeyboardInterrupt:
         exit(1)

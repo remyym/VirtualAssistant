@@ -1,0 +1,71 @@
+{
+  "intents": [
+    {"tag":  "greetings",
+      "patterns": ["hello", "hey", "hi", "whats up"],
+      "responses": ["Hello.", "Hi there.", "Hi, what can I do for you?"]},
+    {"tag":  "good",
+      "patterns": ["im good", "im okay", "good", "great", "okay", "me too"],
+      "responses": ["That's great!", "Okay, let me know how I can help."]},
+    {"tag":  "mood",
+      "patterns": ["how are you", "how was your day", "how have you been", "hows it going", "how is everything"],
+      "responses": ["I'm fine. Thanks for asking.", "I'm great. Thanks for asking.", "I'm pretty good. How are you?", "I'm good. Thanks."]},
+    {"tag":  "name",
+      "patterns": ["who are you", "whats your name"],
+      "responses": ["I'm {assistant_name}."]},
+    {"tag":  "user_name",
+      "patterns": ["what is my name", "do you know my name"],
+      "responses": ["Your name is {user_name}."]},
+    {"tag":  "time",
+      "patterns": ["what time is it", "whats the time", "what is the time"],
+      "responses": [""]},
+    {"tag":  "date",
+      "patterns": ["what day is it", "what month is it", "what year is it", "whats the date", "whats the day of the month"],
+      "responses": [""]},
+    {"tag":  "dice",
+      "patterns": ["roll the dice", "roll the die"],
+      "responses": [""]},
+    {"tag":  "open",
+      "patterns": ["open", "open the app"],
+      "responses": [""]},
+    {"tag":  "doing",
+      "patterns": ["what are you doing"],
+      "responses": ["Well right now, I'm talking to you."]},
+    {"tag":  "age",
+      "patterns": ["how old are you", "whats your age", "when were you born"],
+      "responses": ["I was created in December 2, 2022."]},
+    {"tag": "sure",
+      "patterns": ["are you sure", "you sure", "for real", "fr"],
+      "responses": ["Yes.", "Yes, I'm sure."]
+    },
+    {"tag":  "insult",
+      "patterns": ["you're dumb", "you're stupid", "i hate you", "you suck"],
+      "responses": ["I'm just trying to help.", "The feeling is not mutual.", "That wasn't very nice.", "I won't respond to that", "I'm sorry."]},
+    {"tag": "farewell",
+      "patterns": ["goodbye", "bye", "stop", "shut up"],
+      "responses": ["Goodbye.", "See you later.", "Bye."]
+    },
+    {"tag": "undefined",
+      "patterns": ["okay", "ok", "yes", "no", "what", "huh"],
+      "responses": ["How can I help?", "Okay.", "I'm not sure I understand."]
+    }
+  ],
+  "sentences": [
+    {"tag": "user_name ",
+      "type": "string",
+      "responses": ["What should I call you?"],
+      "after": "got_name"
+    },
+    {"tag": "got_name",
+      "type": "confirm",
+      "modifiers": ["capitalize {1}"],
+      "responses": ["OK, you'd like me to call you \"{1}\"?", "I'll call you \"{1}\" from now on, OK?"],
+      "confirm": ["{1} it is!"]
+    }
+  ],
+  "saved_data": {
+    "user_name": "John Doe",
+    "assistant_name": "Alexa",
+    "phone": "555-555-1234",
+    "user_age": 18
+  }
+}
