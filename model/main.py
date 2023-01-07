@@ -9,9 +9,9 @@ from keras.models import Sequential
 from keras.optimizers import SGD
 from nltk.stem import WordNetLemmatizer
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-lemmatizer = WordNetLemmatizer()
+ignore = ['?', '!', '.', ',', "'", '-']
 
 
 class GenericModel:
@@ -24,6 +24,7 @@ class GenericModel:
         self.model = None
 
         self.hist = None
+        self.lemmatizer = WordNetLemmatizer()
 
     def train(self):
         with warnings.catch_warnings():
@@ -32,8 +33,6 @@ class GenericModel:
 
         documents = []
         training = []
-
-        ignore = ['?', '!', '.', ',', '\'']
 
         for intent in self.intents:
             for pattern in intent['patterns']:
@@ -45,7 +44,7 @@ class GenericModel:
                     self.classes.append(intent['tag'])
 
         self.words = list(
-            map(lambda w: lemmatizer.lemmatize(w.lower()), filter(lambda w: w not in ignore, self.words)))
+            map(lambda w: self.lemmatizer.lemmatize(w.lower()), filter(lambda w: w not in ignore, self.words)))
 
         self.words = sorted(list(set(self.words)))
         self.classes = sorted(list(set(self.classes)))
@@ -54,7 +53,7 @@ class GenericModel:
 
         for doc in documents:
             word_patterns = doc[0]
-            word_patterns = list(map(lambda w: lemmatizer.lemmatize(w.lower()), word_patterns))
+            word_patterns = list(map(lambda w: self.lemmatizer.lemmatize(w.lower()), word_patterns))
 
             bag = list(map(lambda w: 1 if w in word_patterns else 0, self.words))
 
@@ -80,10 +79,9 @@ class GenericModel:
 
         self.model.save('Model/save')
 
-    @staticmethod
-    def clean_up_sentence(sentence):
+    def clean_up_sentence(self, sentence):
         sentence_words = nltk.word_tokenize(sentence)
-        sentence_words = [lemmatizer.lemmatize(word.lower()) for word in sentence_words]
+        sentence_words = [self.lemmatizer.lemmatize(word.lower()) for word in sentence_words]
 
         return sentence_words
 

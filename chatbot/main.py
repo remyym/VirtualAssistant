@@ -1,19 +1,21 @@
 import random
-import json
 import re
 
+from utils import format_data
 from model import GenericModel
 
 
 class GenericAssistant:
-    def __init__(self, name, data, handlers):
+    def __init__(self, name, intents, sentences, user, handlers):
         self.name = name
         self.handlers = handlers
 
-        with open(data) as f:
-            self.data = json.loads(f.read())
+        self.message_history = []
+        self.current_method = None
 
-        self.model = GenericModel(intents=self.data['intents'])
+        self.intents, self.sentences, self.user = intents, sentences, user
+
+        self.model = GenericModel(intents=self.intents)
         self.model.train()
 
     def __str__(self):
@@ -22,36 +24,53 @@ class GenericAssistant:
     def get_intent(self, tag):
         ints = None
 
-        for intent in self.data['intents']:
+        for intent in self.intents:
             if intent.get('tag') == tag:
                 ints = intent
 
         return ints
 
-    def get_method(self, tag, params):
-        if tag in self.handlers.mappings:
-            return self.handlers.mappings[tag](params)
+    def get_methods(self, intent, params):
+        methods = []
 
-    def get_response(self, tag):
-        intent = self.get_intent(tag)
+        for method in intent.get('methods'):
+            if method in self.handlers.mappings:
+                self.current_method = method
+                result = self.handlers.mappings[method](params)
 
-        return random.choice(intent.get('responses'))
+                if result:
+                    methods.append(result)
+
+        self.current_method = None
+
+        return methods
+
+    def get_random_response(self, intent):
+        responses = intent.get('responses')
+
+        if responses:
+            filtered_responses = responses
+
+            if self.message_history:
+                last_message = self.message_history[-1]
+                filtered_responses = [response for response in responses if response != last_message]
+
+            return random.choice(filtered_responses)
 
     def request(self, message):
         predictions = self.model.predict_class(message)
         result = self.model.process(predictions)
-        response = self.get_response(result.get('tag'))
 
-        # Check if there is a method
-        method = self.get_method(result.get('tag'), self.model.clean_up_sentence(message))
+        response = self.get_random_response(result)
+        methods = self.get_methods(result, self.model.clean_up_sentence(message))
 
-        if method and not response:
-            return method, result
+        return_list = []
 
-        pattern = re.compile(r"{([^}]*)}")
-        matches = pattern.findall(response)
+        for method in methods:
+            return_list.append(method)
 
-        for match in matches:
-            self.handlers.respond(result.get('tag'), match)
+        if response:
+            response = format_data(response, self.user)
+            return_list.append(response)
 
-        return response, result
+        return return_list, result
