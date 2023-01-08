@@ -2,56 +2,83 @@ import json
 from pathlib import Path
 
 from chatbot import GenericAssistant
-
+from handlers import mappings
 from utils import speak, get_response, listen_for_wake_word
-import handlers
 
-data = {}
+data: dict = {}
 
 for file in Path('data').glob('*'):
     if file.suffix == '.json':
         with open(file) as f:
             data[file.stem] = json.loads(f.read())
 
-intents, sentences, config, user = [data.get(key).get(key) for key in ['intents', 'sentences', 'config', 'user']]
+config: dict
+profile: dict
+intents: dict
 
-alexa = GenericAssistant(name=config.get('name'), intents=intents, sentences=sentences, user=user, handlers=handlers)
+config, profile, intents = [data.get(key) for key in ['config', 'profile', 'intents']]
+assistant: GenericAssistant = GenericAssistant(config, profile, intents, mappings)
 
 
 def main():
     try:
-        detection = False
+        # Don't listen again:
+
+        # first_time = True
+        # while True:
+        #     if first_time:
+        #         first_time = False
+        #         print("Listening for wake word...")
+        #     detection = listen_for_wake_word(config.get('wake_word'))
+        #
+        #     if detection:
+        #         message = get_response()
+        #
+        #         if not message:
+        #             first_time = True
+        #             continue
+        #
+        #         responses, result = assistant.request(message)
+        #
+        #         if responses and result:
+        #             for response in responses:
+        #                 if isinstance(response, tuple):
+        #                   speak(response, send=True)
+        #
+        #         first_time = True
+
+        # Normal:
+
+        detection: bool = False
+        first_time: bool = True
 
         while True:
             if not detection:
+                if first_time:
+                    print("Listening for the wake word...")
+                    first_time = False
                 detection = listen_for_wake_word(config.get('wake_word'))
             else:
-                greetings = alexa.get_random_response(alexa.get_intent('greetings'))
-                alexa.message_history.append(greetings)
+                assistant.say('greetings')
 
-                speak(greetings, True)
-
-                while True:
-                    message = get_response()
+                while detection:
+                    message: str = get_response()
 
                     if not message:
-                        detection = False
+                        detection, first_time = False, True
                         break
 
-                    responses, result = alexa.request(message)
+                    responses: list
+                    result: dict
 
-                    farewell = False
+                    responses, result = assistant.request(message)
 
-                    for response in responses:
-                        if response and result:
-                            speak(response, True)
+                    if responses and result:
+                        for response in responses:
+                            speak(response, send=True)
 
-                            if result.get('tag') == 'farewell':
-                                farewell = True
-
-                    if farewell:
-                        detection = False
-                        break
+                        if result.get('tag') == 'farewell':
+                            detection, first_time = False, True
     except KeyboardInterrupt:
         exit(1)
 

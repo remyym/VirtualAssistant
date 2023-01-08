@@ -1,84 +1,305 @@
-{
-  "intents": [
-    {"tag":  "greetings",
-      "patterns": ["hello", "hey", "hi", "whats up"],
-      "responses": ["Hello.", "Hi there.", "Hi, what can I do for you?"],
-      "methods": []
-    },
-    {"tag":  "good",
-      "patterns": ["i'm good", "i'm okay", "good", "great", "okay", "me too"],
-      "responses": ["That's great!", "Okay, let me know how I can help."],
-      "methods": []
-    },
-    {"tag":  "mood",
-      "patterns": ["how are you", "how was your day", "how have you been", "how's it going", "how is everything"],
-      "responses": ["I'm fine. Thanks for asking.", "I'm great. Thanks for asking.", "I'm pretty good. How are you?", "I'm good. Thanks."],
-      "methods": []
-    },
-    {"tag":  "assistant_name",
-      "patterns": ["who are you", "what is your name"],
-      "responses": ["I'm {assistant_name}."],
-      "methods": []
-    },
-    {"tag":  "user_name",
-      "patterns": ["what is my name", "do you know my name"],
-      "responses": ["Your name is {name}."],
-      "methods": []
-    },
-    {"tag":  "time",
-      "patterns": ["what time is it", "whats the time", "what is the time"],
-      "responses": [],
-      "methods": ["time"]
-    },
-    {"tag":  "date",
-      "patterns": ["what day is it", "what month is it", "what year is it", "whats the date", "whats the day of the month"],
-      "responses": [],
-      "methods": ["date"]
-    },
-    {"tag":  "dice",
-      "patterns": ["roll the dice", "roll the die"],
-      "responses": [],
-      "methods": ["dice"]
-    },
-    {"tag":  "rock_paper_scissors",
-      "patterns": ["lets play rock paper scissors", "rock paper scissors", "ro sham bo"],
-      "responses": [],
-      "methods": ["rock_paper_scissors"]
-    },
-    {"tag":  "open",
-      "patterns": ["open", "open the app"],
-      "responses": [],
-      "methods": ["open"]
-    },
-    {"tag":  "doing",
-      "patterns": ["what are you doing"],
-      "responses": ["Well right now, I'm talking to you."],
-      "methods": []
-    },
-    {"tag":  "age",
-      "patterns": ["how old are you", "whats your age", "when were you born"],
-      "responses": ["I was created in December 2, 2022."],
-      "methods": []
-    },
-    {"tag": "sure",
-      "patterns": ["are you sure", "you sure", "for real", "fr", "really"],
-      "responses": ["I'm pretty sure.", "I think so."],
-      "methods": []
-    },
-    {"tag":  "insult",
-      "patterns": ["you're dumb", "you're stupid", "i hate you", "you suck"],
-      "responses": ["I'm just trying to help.", "That wasn't very nice.", "I won't respond to that", "I'm sorry."],
-      "methods": []
-    },
-    {"tag": "farewell",
-      "patterns": ["goodbye", "bye", "stop", "shut up"],
-      "responses": ["Goodbye.", "See you later.", "Bye."],
-      "methods": []
-    },
-    {"tag": "undefined",
-      "patterns": ["okay", "ok", "yes", "no", "what", "huh"],
-      "responses": ["How can I help?", "Okay.", "I'm not sure I understand."],
-      "methods": []
-    }
-  ]
-}
+[
+  {
+    "tag": "greetings",
+    "patterns": [
+      "alexa",
+      "hello",
+      "hey",
+      "hi",
+      "whats up"
+    ],
+    "responses": [
+      "Hello.",
+      "Hi there.",
+      "Hi, what can I do for you?"
+    ],
+    "methods": []
+  },
+  {
+    "tag": "good",
+    "patterns": [
+      "i'm good",
+      "i'm okay",
+      "good",
+      "great",
+      "okay",
+      "me too"
+    ],
+    "responses": [
+      "That's great!",
+      "Okay, let me know how I can help."
+    ],
+    "methods": []
+  },
+  {
+    "tag": "mood",
+    "patterns": [
+      "how are you",
+      "how was your day",
+      "how have you been",
+      "how's it going",
+      "how is everything"
+    ],
+    "responses": [
+      "I'm fine. Thanks for asking.",
+      "I'm great. Thanks for asking.",
+      "I'm pretty good. How are you?",
+      "I'm good. Thanks."
+    ],
+    "methods": []
+  },
+  {
+    "tag": "assistant_name",
+    "patterns": [
+      "who are you",
+      "what is your name"
+    ],
+    "responses": [
+      "I'm {config.name}."
+    ],
+    "methods": []
+  },
+  {
+    "tag": "user_name",
+    "patterns": [
+      "what is my name",
+      "do you know my name"
+    ],
+    "responses": [
+      "Your name is {profile.name}."
+    ],
+    "methods": []
+  },
+  {
+    "tag": "time",
+    "patterns": [
+      "what time is it",
+      "whats the time",
+      "what is the time"
+    ],
+    "responses": [],
+    "methods": [
+      "time"
+    ]
+  },
+  {
+    "tag": "good_morning",
+    "patterns": [
+      "good morning",
+      "have a good morning",
+      "rise and shine"
+    ],
+    "responses": [
+      "Good morning, {profile.name}!",
+      "Rise and shine!",
+      "Top of the morning to you!"
+    ],
+    "methods": []
+  },
+  {
+    "tag": "good_night",
+    "patterns": [
+      "good night",
+      "have a good night",
+      "have a good sleep",
+      "time to sleep"
+    ],
+    "responses": [
+      "Good night!",
+      "Sleep tight!",
+      "Sleep well!",
+      "Sweet dreams!"
+    ],
+    "methods": []
+  },
+  {
+    "tag": "good_time_of_day",
+    "patterns": [
+      "good evening",
+      "good afternoon",
+      "have a good evening",
+      "have a good afternoon"
+    ],
+    "responses": [],
+    "methods": [
+      "time_of_day"
+    ]
+  },
+  {
+    "tag": "date",
+    "patterns": [
+      "what day is it",
+      "what month is it",
+      "what year is it",
+      "whats the date",
+      "whats the day of the month",
+      "what is today"
+    ],
+    "responses": [],
+    "methods": [
+      "date"
+    ]
+  },
+  {
+    "tag": "dice",
+    "patterns": [
+      "roll the dice",
+      "roll the die"
+    ],
+    "responses": [],
+    "methods": [
+      "dice"
+    ]
+  },
+  {
+    "tag": "wikipedia",
+    "patterns": [
+      "search wikipedia for",
+      "summarize wikipedia",
+      "what is",
+      "who is"
+    ],
+    "responses": [],
+    "methods": [
+      "wikipedia"
+    ]
+  },
+  {
+    "tag": "joke",
+    "patterns": [
+      "tell me a joke",
+      "give me a joke",
+      "joke"
+    ],
+    "responses": [],
+    "methods": [
+      "joke"
+    ]
+  },
+  {
+    "tag": "rock_paper_scissors",
+    "patterns": [
+      "lets play rock paper scissors",
+      "rock paper scissors",
+      "ro sham bo"
+    ],
+    "responses": [],
+    "methods": [
+      "rps"
+    ]
+  },
+  {
+    "tag": "open",
+    "patterns": [
+      "open",
+      "open the app"
+    ],
+    "responses": [],
+    "methods": [
+      "open"
+    ]
+  },
+  {
+    "tag": "doing",
+    "patterns": [
+      "what are you doing"
+    ],
+    "responses": [
+      "Well right now, I'm talking to you."
+    ],
+    "methods": []
+  },
+  {
+    "tag": "age",
+    "patterns": [
+      "how old are you",
+      "whats your age",
+      "when were you born"
+    ],
+    "responses": [
+      "I was created in {config.birthdate}."
+    ],
+    "methods": []
+  },
+  {
+    "tag": "sure",
+    "patterns": [
+      "are you sure",
+      "you sure",
+      "for real",
+      "fr",
+      "really"
+    ],
+    "responses": [
+      "I'm pretty sure.",
+      "I think so."
+    ],
+    "methods": []
+  },
+  {
+    "tag": "compliment",
+    "patterns": [
+      "you're the best",
+      "you're nice",
+      "you're kind",
+      "you're smart",
+      "i love you"
+    ],
+    "responses": [
+      "Thank you. I really appreciate that!",
+      "Aww! I could say the same for you."
+    ],
+    "methods": []
+  },
+  {
+    "tag": "insult",
+    "patterns": [
+      "you're dumb",
+      "you're stupid",
+      "i hate you",
+      "you suck"
+    ],
+    "responses": [
+      "I'm just trying to help.",
+      "That wasn't very nice.",
+      "I won't respond to that",
+      "I'm sorry."
+    ],
+    "methods": []
+  },
+  {
+    "tag": "farewell",
+    "patterns": [
+      "goodbye",
+      "bye",
+      "stop",
+      "go away",
+      "shut up",
+      "close",
+      "exit"
+    ],
+    "responses": [
+      "Goodbye.",
+      "See you later.",
+      "Bye."
+    ],
+    "methods": []
+  },
+  {
+    "tag": "undefined",
+    "patterns": [
+      "okay",
+      "ok",
+      "yes",
+      "no",
+      "what",
+      "huh"
+    ],
+    "responses": [
+      "How can I help?",
+      "Okay.",
+      "I'm not sure I understand."
+    ],
+    "methods": []
+  }
+]

@@ -1,7 +1,5 @@
 {
-	"config": {
-		"name": "Alexa",
-		"wake_word": "Alexa",
-		"birthdate": "12/2/2022"
-	}
+  "name": "Alexa",
+  "wake_word": "Alexa",
+  "birthdate": "December 2, 2022"
 }

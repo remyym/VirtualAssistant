@@ -1,28 +1,50 @@
 import random
-import re
+from concurrent.futures import ThreadPoolExecutor, Future
+from typing import Any
 
-from utils import format_data
 from model import GenericModel
+from utils import format_data, speak
 
 
 class GenericAssistant:
-    def __init__(self, name, intents, sentences, user, handlers):
-        self.name = name
-        self.handlers = handlers
+    config: dict
+    profile: dict
+    intents: dict
+    mappings: dict
+    data: dict
+    message_history: list
+    current_method: Any
+    model: GenericModel
 
+    def __init__(self, config: dict, profile: dict, intents: dict, mappings: dict):
+        # Set variables
+        self.config = config
+        self.profile = profile
+        self.intents = intents
+        self.mappings = mappings
+
+        # Set data
+        self.data = {'config': self.config, 'profile': self.profile}
+
+        # Cache
         self.message_history = []
         self.current_method = None
 
-        self.intents, self.sentences, self.user = intents, sentences, user
-
+        # Train
         self.model = GenericModel(intents=self.intents)
         self.model.train()
 
-    def __str__(self):
-        return self.name
+    def __str__(self) -> str:
+        return self.config.get('name')
 
-    def get_intent(self, tag):
-        ints = None
+    def say(self, tag: str) -> None:
+        greetings: str = self.get_random_response(self.get_intent(tag))
+        self.message_history.append(greetings)
+
+        speak(greetings, send=True)
+
+    def get_intent(self, tag: str) -> Any:
+        ints: Any = None
 
         for intent in self.intents:
             if intent.get('tag') == tag:
@@ -30,47 +52,64 @@ class GenericAssistant:
 
         return ints
 
-    def get_methods(self, intent, params):
-        methods = []
+    def get_random_response(self, intent: dict) -> str:
+        assert isinstance(intent, dict), "Invalid intent"
+
+        responses: list = intent.get('responses')
+
+        if responses:
+            filtered_responses: list = responses
+
+            if self.message_history:
+                last_message: str = self.message_history[-1]
+                filtered_responses = [response for response in responses if response != last_message]
+
+            return random.choice(filtered_responses)
+
+    def call_methods(self, intent: dict, params: list) -> list:
+        methods: list = []
 
         for method in intent.get('methods'):
-            if method in self.handlers.mappings:
-                self.current_method = method
-                result = self.handlers.mappings[method](params)
+            if method in self.mappings:
+                with ThreadPoolExecutor() as executor:
+                    self.current_method = method
 
-                if result:
-                    methods.append(result)
+                    thread: Future = executor.submit(self.mappings[method], params)
+                    result: object = thread.result()
+
+                    if result:
+                        methods.append(result)
 
         self.current_method = None
 
         return methods
 
-    def get_random_response(self, intent):
-        responses = intent.get('responses')
+    def request(self, message: str) -> (list, str):
+        name: str = self.config.get('name')
 
-        if responses:
-            filtered_responses = responses
+        if name in message:
+            message.replace(name, '')
 
-            if self.message_history:
-                last_message = self.message_history[-1]
-                filtered_responses = [response for response in responses if response != last_message]
+        predictions: list = self.model.predict_class(message)
+        result: Any = self.model.process(predictions)
 
-            return random.choice(filtered_responses)
+        random_response: str = self.get_random_response(result)
+        method_params: list[str] = self.model.clean_up_sentence(message)
 
-    def request(self, message):
-        predictions = self.model.predict_class(message)
-        result = self.model.process(predictions)
+        for word in method_params:
+            for pattern in result.get('patterns'):
+                if word in pattern and word in method_params:
+                    method_params.remove(word)
 
-        response = self.get_random_response(result)
-        methods = self.get_methods(result, self.model.clean_up_sentence(message))
+        method_responses: list = self.call_methods(result, method_params)
 
-        return_list = []
+        return_list: list = []
 
-        for method in methods:
-            return_list.append(method)
+        for method_response in method_responses:
+            return_list.append(method_response)
 
-        if response:
-            response = format_data(response, self.user)
+        if random_response:
+            response: str = format_data(random_response, self.data)
             return_list.append(response)
 
         return return_list, result
