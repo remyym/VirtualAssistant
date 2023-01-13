@@ -78,7 +78,7 @@ fabric.properties
 
 # Models and Builds
 Model/save
-build/
+build
 
 # PyCache
-__pycache__/*
+__pycache__
