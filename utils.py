@@ -14,7 +14,7 @@ from speech_recognition import AudioData
 recognizer = speech.Recognizer()
 
 recognizer.dynamic_energy_threshold = False
-recognizer.energy_threshold = 400
+recognizer.energy_threshold = 800
 
 
 def resource_path(relative_path):

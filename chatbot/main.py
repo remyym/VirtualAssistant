@@ -51,7 +51,7 @@ class GenericAssistant:
         if responses:
             filtered_responses: list = responses
 
-            if self.message_history:
+            if self.message_history:                
                 last_message: str = self.message_history[-1]
                 filtered_responses = [response for response in responses if response != last_message]
 
@@ -75,7 +75,7 @@ class GenericAssistant:
 
         return methods
 
-    def request(self, message: str) -> (list, str):
+    def request(self, message: str) -> tuple:
         name: str = self.config.get('name')
 
         if name in message:
@@ -85,6 +85,8 @@ class GenericAssistant:
         result: Any = self.model.process(predictions)
 
         random_response: str = self.get_random_response(result)
+        self.message_history.append(random_response)
+        
         method_params: list[str] = self.model.clean_up_sentence(message)
 
         for word in method_params:
