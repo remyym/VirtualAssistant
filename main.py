@@ -1,53 +1,24 @@
 import json
-from pathlib import Path
 
 from chatbot import GenericAssistant
 from handlers import mappings
-from utils import speak, get_response, listen_for_wake_word
+from utils import speak, get_response, listen_for_wake_word, resource_path
 
-data: dict = {}
+with open(resource_path('resources/data/config.json')) as f:
+    config = json.loads(f.read())
 
-for file in Path('data').glob('*'):
-    if file.suffix == '.json':
-        with open(file) as f:
-            data[file.stem] = json.loads(f.read())
+with open(resource_path('resources/data/profile.json')) as f:
+    profile = json.loads(f.read())
 
-config: dict
-profile: dict
-intents: dict
+with open(resource_path('resources/data/intents.json')) as f:
+    intents = json.loads(f.read())
 
-config, profile, intents = [data.get(key) for key in ['config', 'profile', 'intents']]
 assistant: GenericAssistant = GenericAssistant(config, profile, intents, mappings)
 
 
 def main():
     try:
-        # Don't listen again:
-
-        # first_time = True
-        # while True:
-        #     if first_time:
-        #         first_time = False
-        #         print("Listening for wake word...")
-        #     detection = listen_for_wake_word(config.get('wake_word'))
-        #
-        #     if detection:
-        #         message = get_response()
-        #
-        #         if not message:
-        #             first_time = True
-        #             continue
-        #
-        #         responses, result = assistant.request(message)
-        #
-        #         if responses and result:
-        #             for response in responses:
-        #                 if isinstance(response, tuple):
-        #                   speak(response, send=True)
-        #
-        #         first_time = True
-
-        # Normal:
+        # Normal voice detection:
 
         detection: bool = False
         first_time: bool = True
@@ -59,8 +30,6 @@ def main():
                     first_time = False
                 detection = listen_for_wake_word(config.get('wake_word'))
             else:
-                assistant.say('greetings')
-
                 while detection:
                     message: str = get_response()
 

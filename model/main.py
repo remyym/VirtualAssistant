@@ -4,12 +4,11 @@ import warnings
 from typing import Any
 
 import nltk
-import numpy as np
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
 from keras.optimizers import SGD
 from nltk.stem import WordNetLemmatizer
-from numpy import ndarray
+from numpy import ndarray, array
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -17,12 +16,6 @@ ignore = ['?', '!', '.', ',']
 
 
 class GenericModel:
-    intents: dict
-    words: list
-    classes: list
-    model: Sequential | None
-    lemmatizer: WordNetLemmatizer
-
     def __init__(self, intents: dict):
         # Set variables
         self.intents = intents
@@ -70,7 +63,7 @@ class GenericModel:
             training.append([bag, output_row])
 
         random.shuffle(training)
-        training = np.array(training, dtype=object)
+        training = array(training, dtype=object)
 
         train_x: list[Any] | list | Any = list(training[:, 0])
         train_y: list[Any] | list | Any = list(training[:, 1])
@@ -84,7 +77,7 @@ class GenericModel:
         self.model.add(Dense(len(train_y[0]), activation='softmax'))
 
         self.model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-        self.model.fit(np.array(train_x), np.array(train_y), epochs=200, batch_size=5, verbose=1)
+        self.model.fit(array(train_x), array(train_y), epochs=200, batch_size=5, verbose=1)
 
         self.model.save('Model/save')
 
@@ -104,11 +97,11 @@ class GenericModel:
                 if word == s:
                     bag[i] = 1
 
-        return np.array(bag)
+        return array(bag)
 
     def predict_class(self, sentence: str) -> list:
         bow: ndarray = self.bag_of_words(sentence)
-        res: Any = self.model.predict(np.array([bow]))[0]
+        res: Any = self.model.predict(array([bow]))[0]
 
         error_threshold: float = 0.25
         results: list = [[i, r] for i, r in enumerate(res) if r > error_threshold]

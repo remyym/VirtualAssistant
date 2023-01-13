@@ -1,5 +1,7 @@
+import os
 import re
 import string
+import sys
 import tempfile
 from datetime import datetime
 
@@ -13,6 +15,12 @@ recognizer = speech.Recognizer()
 
 recognizer.dynamic_energy_threshold = False
 recognizer.energy_threshold = 400
+
+
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
 
 def remove_parentheses(s: str) -> str:
@@ -98,11 +106,14 @@ def listen() -> str | bool:
             recognizer.adjust_for_ambient_noise(source, duration=0.2)
 
             print("Listening...")
-            audio: AudioData = recognizer.listen(source, phrase_time_limit=8, timeout=3)
 
+            audio: AudioData = recognizer.listen(source, phrase_time_limit=8, timeout=3)
             transcript: str = recognizer.recognize_google(audio).replace('-', ' ')
 
             print(f"I heard \"{transcript}\".")
+
+            sound: AudioSegment = AudioSegment.from_mp3(resource_path('resources/sound/finish.mp3'))
+            play(sound)
 
             return transcript
     except (speech.UnknownValueError, speech.WaitTimeoutError):
@@ -121,6 +132,9 @@ def listen_for_wake_word(wake_word: str) -> bool:
             text: str = recognizer.recognize_google(audio)
 
             if wake_word.lower() in text.lower():
+                sound: AudioSegment = AudioSegment.from_mp3(resource_path('resources/sound/start.mp3'))
+                play(sound)
+
                 return True
     except (speech.WaitTimeoutError, speech.UnknownValueError):
         return False

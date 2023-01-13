@@ -7,15 +7,6 @@ from utils import format_data, speak
 
 
 class GenericAssistant:
-    config: dict
-    profile: dict
-    intents: dict
-    mappings: dict
-    data: dict
-    message_history: list
-    current_method: Any
-    model: GenericModel
-
     def __init__(self, config: dict, profile: dict, intents: dict, mappings: dict):
         # Set variables
         self.config = config

@@ -51,7 +51,7 @@ def rps(_: Any | None) -> None | str:
             if word in choices:
                 computer_choice: str = random.choice(choices)
 
-                print(f"{'─' * 20}\nYou chose: {word} \nI chose: {computer_choice}\n{'─' * 20}")
+                print(f"{'#' * 20}\nYou chose: {word} \nI chose: {computer_choice}\n{'#' * 20}")
 
                 if word == computer_choice:
                     result: str = "It's a tie."
