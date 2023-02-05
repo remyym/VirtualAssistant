@@ -5,14 +5,14 @@ from typing import Any
 
 import nltk
 from keras.layers import Dense, Dropout
-from keras.models import Sequential
+from keras. models import Sequential
 from keras.optimizers import SGD
 from nltk.stem import WordNetLemmatizer
 from numpy import ndarray, array
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-ignore = ['?', '!', '.', ',']
+ignore = ['?', '!', '.', ',', '{', '}', '\'']
 
 
 class GenericModel:
@@ -27,6 +27,15 @@ class GenericModel:
 
         self.lemmatizer = WordNetLemmatizer()
 
+    def tokenize_and_append(self, intent, documents, pattern):
+        words: list[str] = nltk.word_tokenize(pattern)
+
+        self.words.extend(words)
+        documents.append((words, intent['tag']))
+
+        if intent['tag'] not in self.classes:
+            self.classes.append(intent['tag'])
+
     def train(self) -> None:
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
@@ -37,12 +46,7 @@ class GenericModel:
 
         for intent in self.intents:
             for pattern in intent['patterns']:
-                word: list[str] = nltk.word_tokenize(pattern)
-                self.words.extend(word)
-
-                documents.append((word, intent['tag']))
-                if intent['tag'] not in self.classes:
-                    self.classes.append(intent['tag'])
+                self.tokenize_and_append(intent, documents, pattern)
 
         self.words = list(
             map(lambda w: self.lemmatizer.lemmatize(w.lower()), filter(lambda w: w not in ignore, self.words)))

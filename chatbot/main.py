@@ -7,15 +7,12 @@ from utils import format_data, speak
 
 
 class GenericAssistant:
-    def __init__(self, config: dict, profile: dict, intents: dict, mappings: dict):
+    def __init__(self, name: str, data: dict, intents: dict, mappings: dict):
         # Set variables
-        self.config = config
-        self.profile = profile
+        self.name = name
+        self.data = data
         self.intents = intents
         self.mappings = mappings
-
-        # Set data
-        self.data = {'config': self.config, 'profile': self.profile}
 
         # Cache
         self.message_history = []
@@ -26,7 +23,7 @@ class GenericAssistant:
         self.model.train()
 
     def __str__(self) -> str:
-        return self.config.get('name')
+        return self.name
 
     def say(self, tag: str) -> None:
         greetings: str = self.get_random_response(self.get_intent(tag))
@@ -51,7 +48,7 @@ class GenericAssistant:
         if responses:
             filtered_responses: list = responses
 
-            if self.message_history:                
+            if self.message_history and len(responses) > 1:
                 last_message: str = self.message_history[-1]
                 filtered_responses = [response for response in responses if response != last_message]
 
@@ -76,10 +73,8 @@ class GenericAssistant:
         return methods
 
     def request(self, message: str) -> tuple:
-        name: str = self.config.get('name')
-
-        if name in message:
-            message.replace(name, '')
+        if self.name in message:
+            message.replace(self.name, '')
 
         predictions: list = self.model.predict_class(message)
         result: Any = self.model.process(predictions)
@@ -88,12 +83,6 @@ class GenericAssistant:
         self.message_history.append(random_response)
         
         method_params: list[str] = self.model.clean_up_sentence(message)
-
-        for word in method_params:
-            for pattern in result.get('patterns'):
-                if word in pattern and word in method_params:
-                    method_params.remove(word)
-
         method_responses: list = self.call_methods(result, method_params)
 
         return_list: list = []

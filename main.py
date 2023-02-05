@@ -1,19 +1,25 @@
 import json
+import os
 
 from chatbot import GenericAssistant
 from handlers import mappings
 from utils import speak, get_response, listen_for_wake_word, resource_path
 
-with open(resource_path('resources/data/config.json')) as f:
-    config = json.loads(f.read())
+data: {dict} = {}
 
-with open(resource_path('resources/data/profile.json')) as f:
-    profile = json.loads(f.read())
+with open(resource_path('resources\\intents.json')) as file:
+    intents = json.load(file)
 
-with open(resource_path('resources/data/intents.json')) as f:
-    intents = json.loads(f.read())
+for filename in os.listdir(resource_path('resources\\data')):
+    if filename.endswith('.json'):
+        with open(resource_path(os.path.join('resources\\data', filename))) as json_file:
+            json_data: dict = json.load(json_file)
+            data[filename.removesuffix('.json')] = json_data
 
-assistant: GenericAssistant = GenericAssistant(config, profile, intents, mappings)
+config: dict = data.get('config')
+name: str = config.get('name') or 'Alexa'
+
+assistant: GenericAssistant = GenericAssistant(name, data, intents, mappings)
 
 
 def main():
@@ -31,7 +37,7 @@ def main():
                 detection = listen_for_wake_word(config.get('wake_word'))
             else:
                 while detection:
-                    message: str = get_response()
+                    message: str = get_response(keep_symbols=False)
 
                     if not message:
                         detection, first_time = False, True
@@ -48,6 +54,23 @@ def main():
 
                         if result.get('tag') == 'farewell':
                             detection, first_time = False, True
+
+        # Input
+
+        # while True:
+        #     message: str = get_response()
+        #
+        #     if not message:
+        #         continue
+        #
+        #     responses: list
+        #     result: dict
+        #
+        #     responses, result = assistant.request(message)
+        #
+        #     if responses and result:
+        #         for response in responses:
+        #             speak(response, send=True)
     except KeyboardInterrupt:
         exit(1)
 

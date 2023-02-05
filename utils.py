@@ -1,9 +1,10 @@
 import os
 import re
-import string
 import sys
 import tempfile
 from datetime import datetime
+from re import Pattern
+from typing import Any
 
 import speech_recognition as speech
 from gtts import gTTS as textToSpeech, gTTS
@@ -11,58 +12,67 @@ from pydub import AudioSegment
 from pydub.playback import play
 from speech_recognition import AudioData
 
+from num2words import num2words
+
 recognizer = speech.Recognizer()
 
-recognizer.dynamic_energy_threshold = False
-recognizer.energy_threshold = 800
 
-
-def resource_path(relative_path):
+def resource_path(relative_path: str) -> str:
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
+
     return os.path.join(os.path.abspath("."), relative_path)
 
 
-def remove_parentheses(s: str) -> str:
-    return re.sub(r' *\(.*\) *', '', s)
+def symbols_to_word(message) -> Any:
+    if not message:
+        return
+
+    new_message: str = message
+
+    for character in message.split():
+        mappings = {
+            '+': 'plus',
+            '-': 'minus',
+            '*': 'times',
+            '/': 'divide',
+            '^': 'to the power of'
+        }
+
+        if character.isdigit():
+            new_message = new_message.replace(character, num2words(character))
+        elif mappings.get(character):
+            new_message = new_message.replace(character, mappings.get(character))
+
+    return new_message
 
 
 def remove_symbols(s: str) -> str:
-    s = re.sub(r'\W', '', s)
-    translator = str.maketrans('', '', string.punctuation)
+    new_string = re.sub(r'[^a-zA-Z0-9 ]+', '', s)
 
-    return s.translate(translator)
-
-
-# def modify(modifier_types: object, text: object) -> object:
-#     for modifier_type in modifier_types:
-#         modifier = modifier_type.split()
-#
-#         if modifier[0] == 'capitalize':
-#             if len(modifier) <= 1:
-#                 return text.capitalize()
-#
-#             modifier.remove(0)
-#
-#             return modifier.format(*text)
+    return new_string
 
 
 def format_data(text: str, data: dict) -> str:
-    pattern = re.compile(r"{([^}]*)}")
-    matches = pattern.findall(text)
+    pattern: Pattern = re.compile(r"{([^}]*)}")
+    matches: list[Any] = pattern.findall(text)
 
-    return_string = text
+    return_string: str = text
 
     for match in matches:
         name, key = match.split('.')
 
         holder = data.get(name)
+
+        if not holder:
+            return ''
+
         replacement = holder.get(key)
 
         if not replacement:
             continue
 
-        return_string = return_string.replace("{" + match + "}", replacement)
+        return_string = pattern.sub(replacement, return_string)
 
     return return_string
 
@@ -85,12 +95,14 @@ def speak(*messages: str, send: bool = False) -> None:
         messages = messages[0]
 
     for message in messages:
-        assert message, "Invalid message"
+        if not message:
+            print("Invalid message")
+            return
 
         if send:
             print(message)
 
-        with tempfile.TemporaryFile(suffix='.mp3', delete=False) as fp:
+        with tempfile.TemporaryFile(suffix='.mp3', delete=True) as fp:
             audio: gTTS = textToSpeech(text=message, lang="en")
 
             audio.write_to_fp(fp)
@@ -112,15 +124,11 @@ def listen() -> str | bool:
 
             print(f"I heard \"{transcript}\".")
 
-            sound: AudioSegment = AudioSegment.from_mp3(resource_path('resources/sound/finish.mp3'))
-            play(sound)
-
             return transcript
     except (speech.UnknownValueError, speech.WaitTimeoutError):
-        return False
+        pass
     except speech.RequestError as e:
-        print("Error requesting results: {0}".format(e))
-        return False
+        print(f"Error requesting results: {e}")
 
 
 def listen_for_wake_word(wake_word: str) -> bool:
@@ -132,14 +140,11 @@ def listen_for_wake_word(wake_word: str) -> bool:
             text: str = recognizer.recognize_google(audio)
 
             if wake_word.lower() in text.lower():
-                sound: AudioSegment = AudioSegment.from_mp3(resource_path('resources/sound/start.mp3'))
-                play(sound)
-
                 return True
     except (speech.WaitTimeoutError, speech.UnknownValueError):
         return False
     except speech.RequestError as e:
-        print("Error requesting results: {0}".format(e))
+        print(f"Error requesting results: {e}")
         return False
 
 
@@ -153,7 +158,7 @@ def get_input(message: str = "") -> str:
 
 
 def get_response(keep_symbols: bool = True) -> str:
-    message: str = listen()
+    message: str = symbols_to_word(listen())
 
     if isinstance(message, str):
         if keep_symbols:
